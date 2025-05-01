@@ -110,6 +110,47 @@ public class WordPredictor {
         // On my computer the linear version causes the tests to take about 20seconds, and the log
         // version runs in less than two. Your results may vary.
         // Hint: The Random class has an instance method "nextDouble" that returns a value in the range [0., 1.]
+
+
+        List<WordProbability> currentWord = probs.get(word);
+
+        double[] myArr = new double[currentWord.size()];
+        int counter = 0;
+        double random = rng.nextDouble();
+
+        for(int i = 0; i < currentWord.size(); i++){
+            WordProbability curProb = currentWord.get(i);
+
+
+           double prob = curProb.cumulativeProbability();
+
+           myArr[counter] = prob;
+
+           counter++;
+
+        }
+
+        int low = 0;
+        int high = myArr.length;
+
+        while(low <= high){
+
+            int mid = low + (high - low) / 2;
+
+            if(random <= currentWord.get(mid).cumulativeProbability() && random >= currentWord.get(mid - 1).cumulativeProbability()){
+                return currentWord.get(mid).word();
+            }
+
+            else if(random < currentWord.get(mid).cumulativeProbability()){
+                high = mid;
+            }
+
+            else if(random > currentWord.get(mid).cumulativeProbability()){
+                low = mid + 1;
+            }
+        }
+
         return null;
     }
+
 }
