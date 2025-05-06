@@ -120,43 +120,34 @@ public class WordPredictor {
 
         List<WordProbability> currentWord = probs.get(word);
 
-        double[] myArr = new double[currentWord.size()];
-        int counter = 0;
+        // picks a random number between 0 and 1
         double random = rng.nextDouble();
 
-        for(int i = 0; i < currentWord.size(); i++){
-            WordProbability curProb = currentWord.get(i);
 
-
-           double prob = curProb.cumulativeProbability();
-
-           myArr[counter] = prob;
-
-           counter++;
-
-        }
 
         int low = 0;
-        int high = myArr.length;
+        int high = currentWord.size() - 1;
 
-        while(low <= high){
+        while(low < high){
 
             int mid = low + (high - low) / 2;
 
-            if(random <= currentWord.get(mid).cumulativeProbability() && random >= currentWord.get(mid - 1).cumulativeProbability()){
-                return currentWord.get(mid).word();
+
+        // if random is less than or equal to the mid probability, search left half
+
+            if(random <= currentWord.get(mid).cumulativeProbability()){
+                high = mid; 
             }
 
-            else if(random < currentWord.get(mid).cumulativeProbability()){
-                high = mid;
-            }
-
+            // if random is greater than mid probability, search right half
             else if(random > currentWord.get(mid).cumulativeProbability()){
                 low = mid + 1;
             }
         }
-
-        return null;
+    
+        // returns the word found at the low index
+        // low and high are equivalent now 
+        return currentWord.get(low).word();
     }
 
 }
